@@ -1,0 +1,25 @@
+{% extends "layout/dashboard.html" %}
+
+{% block title %}Edit Notulensi{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-xl">Edit Notulensi</h2>
+<form id="editForm" method="POST" action="{{ url_for('edit_notulensi', id=notulensi['id_notulensi']) }}">
+    <div class="mb-4">
+        <label for="tanggal" class="block text-sm font-medium text-gray-700">Tanggal</label>
+        <input type="date" id="tanggal" name="tanggal" value="{{ notulensi['tanggal'] }}" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-4">
+        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+        <input type="text" id="status" name="status" value="{{ notulensi['status'] }}" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-4">
+        <label for="catatan" class="block text-sm font-medium text-gray-700">Catatan</label>
+        <textarea id="catatan" name="catatan" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ notulensi['catatan'] }}</textarea>
+    </div>
+    <div class="flex justify-end">
+        <button type="button" id="closeFormBtn" class="px-4 py-2 mr-2 text-white bg-red-600 rounded-lg hover:bg-red-700">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Save</button>
+    </div>
+</form>
+{% endblock %}

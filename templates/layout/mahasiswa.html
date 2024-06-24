@@ -1,0 +1,140 @@
+{% extends "layout/dashboard.html" %}
+
+{% block title %}Mahasiswa{% endblock %}
+
+{% block content %}
+
+<div class="flex justify-end mb-4">
+    <a id="addBtn" class="px-4 py-2 font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">Tambah</a>
+</div>
+
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table class="w-full text-sm text-left text-gray-500 rtl:text-right dark:text-gray-400">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    NIM
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Nama
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Email
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    No Telepon
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mahasiswa in mahasiswa %}
+            <tr class="border-b odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 dark:border-gray-700">
+                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {{ mahasiswa['nim'] }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ mahasiswa['nama'] }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ mahasiswa['email'] }}
+                </td>
+                <td class="px-6 py-4">
+                    {{ mahasiswa['no_telepon'] }}
+                </td>
+                <td class="px-6 py-4">
+                    <a href="{{ url_for('edit_mahasiswa', nim=mahasiswa['nim']) }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline editBtn">Edit</a>
+                    <a href="{{ url_for('delete_mahasiswa', nim=mahasiswa['nim']) }}" class="ml-4 font-medium text-red-600 dark:text-red-500 hover:underline deleteBtn">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Popup Form -->
+<div id="popupForm" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div id="formContainer" class="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <!-- Konten form akan dimuat secara dinamis -->
+    </div>
+</div>
+
+<!-- Delete Alert -->
+<div id="deleteAlert" class="fixed inset-0 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="p-6 bg-white rounded-lg shadow-lg">
+        <h2 class="mb-4 text-xl">Are you sure?</h2>
+        <p class="mb-4">Do you really want to delete this record? This process cannot be undone.</p>
+        <div class="flex justify-end">
+            <button type="button" id="closeAlertBtn" class="px-4 py-2 mr-2 text-white bg-gray-600 rounded-lg hover:bg-gray-700">Cancel</button>
+            <a href="#" id="deleteConfirmBtn" class="px-4 py-2 text-white bg-red-600 rounded-lg hover:bg-red-700">Delete</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('addBtn').addEventListener('click', function() {
+        // Sembunyikan form edit jika sedang terbuka
+        document.getElementById('popupForm').classList.remove('hidden');
+        // Muat form tambah
+        document.getElementById('formContainer').innerHTML = `
+            <h2 class="mb-4 text-xl">Tambah Mahasiswa</h2>
+            <form method="POST" action="{{ url_for('add_mahasiswa') }}">
+                <div class="mb-4">
+                    <label for="nim" class="block text-sm font-medium text-gray-700">NIM</label>
+                    <input type="text" id="nim" name="nim" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="nama" class="block text-sm font-medium text-gray-700">Nama</label>
+                    <input type="text" id="nama" name="nama" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" id="email" name="email" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="mb-4">
+                    <label for="no_telepon" class="block text-sm font-medium text-gray-700">No Telepon</label>
+                    <input type="text" id="no_telepon" name="no_telepon" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" id="closeFormBtn" class="px-4 py-2 mr-2 text-white bg-red-600 rounded-lg hover:bg-red-700">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Save</button>
+                </div>
+            </form>
+        `;
+    });
+
+    document.querySelectorAll('.editBtn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            let editUrl = this.getAttribute('href');
+            fetch(editUrl)
+                .then(response => response.text())
+                .then(data => {
+                    // Sembunyikan form tambah jika sedang terbuka
+                    document.getElementById('formContainer').innerHTML = data;
+                    document.getElementById('popupForm').classList.remove('hidden');
+                });
+        });
+    });
+
+    document.getElementById('closeFormBtn').addEventListener('click', function() {
+        document.getElementById('popupForm').classList.add('hidden');
+    });
+
+    document.querySelectorAll('.deleteBtn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            let deleteUrl = this.getAttribute('href');
+            document.getElementById('deleteConfirmBtn').setAttribute('href', deleteUrl);
+            document.getElementById('deleteAlert').classList.remove('hidden');
+        });
+    });
+
+    document.getElementById('closeAlertBtn').addEventListener('click', function() {
+        document.getElementById('deleteAlert').classList.add('hidden');
+    });
+</script>
+
+{% endblock %}

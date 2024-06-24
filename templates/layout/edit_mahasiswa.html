@@ -1,0 +1,29 @@
+{% extends "layout/dashboard.html" %}
+
+{% block title %}Edit Mahasiswa{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-xl">Edit Mahasiswa</h2>
+<form id="editForm" method="POST" action="{{ url_for('edit_mahasiswa', nim=mahasiswa['nim']) }}">
+    <div class="mb-4">
+        <label for="nim" class="block text-sm font-medium text-gray-700">NIM</label>
+        <input type="text" id="nim" name="nim" value="{{ mahasiswa['nim'] }}" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-4">
+        <label for="nama" class="block text-sm font-medium text-gray-700">Nama</label>
+        <input type="text" id="nama" name="nama" value="{{ mahasiswa['nama'] }}" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-4">
+        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+        <input type="email" id="email" name="email" value="{{ mahasiswa['email'] }}" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+    </div>
+    <div class="mb-4">
+        <label for="no_telepon" class="block text-sm font-medium text-gray-700">No Telepon</label>
+        <input type="text" id="no_telepon" name="no_telepon" value="{{ mahasiswa['no_telepon'] }}" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+    </div>
+    <div class="flex justify-end">
+        <button type="button" id="closeFormBtn" class="px-4 py-2 mr-2 text-white bg-red-600 rounded-lg hover:bg-red-700">Cancel</button>
+        <button type="submit" class="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700">Save</button>
+    </div>
+</form>
+{% endblock %}
